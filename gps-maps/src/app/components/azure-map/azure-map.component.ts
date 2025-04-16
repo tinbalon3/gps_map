@@ -300,10 +300,10 @@ for (const result of this.searchResults) {
   private calculateRoute() {
     if (!this.currentLocation || !this.destinationLocation || !this.dataSource) return;
 
-    const start: [number, number] = [this.currentLocation.lat, this.currentLocation.lng];
+   
     const end: [number, number] = [this.destinationLocation.lat, this.destinationLocation.lng];
 
-    this.routingService.getRoute(start, end).subscribe({
+    this.routingService.getRoute(end).subscribe({
       next: (response) => {
         if (response.status === 'success' && response.route) {
           // Cập nhật route info
