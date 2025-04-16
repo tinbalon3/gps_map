@@ -31,7 +31,7 @@ async def get_route(request: RouteRequest):
     try:
        
         start_coords = (10.801300,106.650378)
-        if request.destination_location:
+        if request.destination_location.latitude != 0 and request.destination_location.longitude != 0:
             end_coords = (request.destination_location.latitude, request.destination_location.longitude)
         else:
             end_coords = (10.847037, 106.692735)
