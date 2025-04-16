@@ -29,12 +29,13 @@ async def get_route(request: RouteRequest):
     Lấy thông tin tuyến đường từ điểm xuất phát đến điểm đến
     """
     try:
-        if request.start is None or request.end is None:
-            start_coords = (10.801300,106.650378)
-            end_coords = (10.847037, 106.692735)
+       
+        start_coords = (10.801300,106.650378)
+        if request.destination_location:
+            end_coords = (request.destination_location.latitude, request.destination_location.longitude)
         else:
-            start_coords = (request.start.latitude, request.start.longitude)
-            end_coords = (request.end.latitude, request.end.longitude)
+            end_coords = (10.847037, 106.692735)
+       
             
         route = await azure_maps_service.get_route(
             start_coords=start_coords,
@@ -63,10 +64,7 @@ async def search_places(request: SearchRequest):
     Tìm kiếm địa điểm gần vị trí người dùng, truyền vào vị trí muốn tìm và vị trí hiện tại của người dùng  (lat/lon).
     """
     try:
-        if request.coordinates == None:
-            start_coords = (10.801300,106.650378)
-        else:
-            start_coords = (request.coordinates.latitude, request.coordinates.longitude)
+        start_coords = (10.801300,106.650378)
         if request.query == None:
             query = "Vườn lài"
         else:

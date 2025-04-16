@@ -7,7 +7,7 @@ class Coordinates(BaseModel):
 
 class SearchRequest(BaseModel):
     query: Optional[str] = None
-    coordinates:Optional[Coordinates] = None # Vị trí hiện tại của người dùng (lat/lon)
+  
     
 class SearchResult(BaseModel):
     name: str
@@ -15,8 +15,7 @@ class SearchResult(BaseModel):
     coordinates: Coordinates
     
 class RouteRequest(BaseModel):
-    start: Optional[Coordinates] = None
-    end:  Optional[Coordinates] = None
+    destination_location:  Optional[Coordinates] = None
     avoid: Optional[List[str]] = [] # Các loại đường cần tránh: ['tollRoads', 'ferries', etc.]
     
 class SearchResponse(BaseModel):
@@ -27,7 +26,7 @@ class SearchResponse(BaseModel):
 class RoutePoint(BaseModel):
     latitude: float
     longitude: float
-    distance_from_start: Optional[float] = None # Khoảng cách từ điểm xuất phát (mét)
+  
 
 class RouteDetails(BaseModel):
     distance: float # Tổng khoảng cách (mét)

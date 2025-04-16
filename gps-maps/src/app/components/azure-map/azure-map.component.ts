@@ -392,19 +392,13 @@ for (const result of this.searchResults) {
     if (!this.currentLocation) {
        request = {
         query: this.searchQuery,
-        coordinates: {
-          latitude:  10.801255,
-          longitude: 106.650373
-        }
+        
       };
     }
     else {
        request = {
         query: this.searchQuery,
-        coordinates: {
-          latitude: this.currentLocation.lat,
-          longitude: this.currentLocation.lng
-        }
+       
       };
     }
    
