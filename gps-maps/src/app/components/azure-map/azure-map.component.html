@@ -1,0 +1,35 @@
+﻿<div class="map-container">
+  <div class="search-box">
+    <input type="text"
+           [(ngModel)]="searchQuery"
+           placeholder="Tìm kiếm địa điểm...">
+    <button (click)="onSearch()">Tìm kiếm</button>
+   
+  </div>
+  <div class="search-results" *ngIf="searchResults.length > 0">
+    <ul>
+      <li *ngFor="let result of searchResults" (click)="selectSearchResult(result)">
+        <strong>{{ result.name }}</strong><br>
+        <small>{{ result.address }}</small>
+      </li>
+    </ul>
+  </div>
+  <div #mapContainer id="azureMap"></div>
+  <div class="info-panel" *ngIf="currentLocation || destinationLocation">
+    <div class="location-info" *ngIf="currentLocation">
+      <h4>Vị trí hiện tại</h4>
+      <p>Vĩ độ: {{currentLocation.lat | number:'1.6-6'}}</p>
+      <p>Kinh độ: {{currentLocation.lng | number:'1.6-6'}}</p>
+    </div>
+    <div class="location-info" *ngIf="destinationLocation">
+      <h4>Điểm đến</h4>
+      <p>Vĩ độ: {{destinationLocation.lat | number:'1.6-6'}}</p>
+      <p>Kinh độ: {{destinationLocation.lng | number:'1.6-6'}}</p>
+    </div>
+    <div class="route-info" *ngIf="routeInfo">
+      <h4>Thông tin tuyến đường</h4>
+      <p>Khoảng cách: {{(routeInfo.distance / 1000) | number:'1.1-1'}} km</p>
+      <p>Thời gian: {{(routeInfo.duration / 60) | number:'1.0-0'}} phút</p>
+    </div>
+  </div>
+</div>

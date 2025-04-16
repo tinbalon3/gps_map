@@ -1,0 +1,112 @@
+.map-container {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+}
+
+.search-box {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 1000;
+  display: flex;
+  gap: 10px;
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.search-box input {
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 300px;
+  font-size: 14px;
+}
+
+.search-box button {
+  padding: 8px 16px;
+  background: #2272B9;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s;
+}
+
+.search-box button:hover {
+  background: #1a5a94;
+}
+
+#azureMap {
+  width: 100%;
+  height: 100%;
+  min-height: 300px;
+}
+
+.info-panel {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  max-width: 300px;
+  font-size: 14px;
+  z-index: 1000;
+}
+
+.location-info, .route-info {
+  margin-bottom: 15px;
+}
+
+.location-info:last-child, .route-info:last-child {
+  margin-bottom: 0;
+}
+
+h4 {
+  margin: 0 0 8px 0;
+  color: #2272B9;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+p {
+  margin: 4px 0;
+  color: #333;
+}
+
+/* Custom marker styles */
+.map-marker {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid white;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+  position: relative;
+  transform: translate(-50%, -50%);
+}
+
+/* Animation cho marker vị trí hiện tại */
+.map-marker[style*="background-color: red"] {
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.2);
+    opacity: 0.8;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+}
