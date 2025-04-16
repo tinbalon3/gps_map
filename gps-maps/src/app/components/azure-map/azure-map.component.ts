@@ -74,7 +74,7 @@ export class AzureMapComponent implements OnInit, OnDestroy {
         authType: atlas.AuthenticationType.subscriptionKey,
         subscriptionKey: this.azureMapsService.getSubscriptionKey()
       },
-      center: [105.8542, 21.0285],
+      center: [106.650378,10.801300], // Long, Lat
       zoom: 13,
       style: 'road',
       language: 'vi-VN'
@@ -126,7 +126,6 @@ export class AzureMapComponent implements OnInit, OnDestroy {
     });
     });
     this.searchQuery = "Vườn lài"
-    console.log(this.searchQuery)
     this.onSearch()
   }
   selectSearchResult(result: SearchResult): void {
@@ -138,33 +137,18 @@ export class AzureMapComponent implements OnInit, OnDestroy {
   }
   
   private getCurrentLocation() {
-    if (!navigator.geolocation) {
-      console.error('Geolocation không được hỗ trợ');
-      return;
-    }
+  
+    const location: Location = {
+      lat: 10.801300,
+      lng: 106.650378
+    };
+    this.currentLocation = location;
+    this.updateCurrentPosition(location);
+    this.locationService.updateLocation(location);
 
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        const location: Location = {
-          lat: position.coords.latitude,
-          lng: position.coords.longitude
-        };
-        this.currentLocation = location;
-        this.updateCurrentPosition(location);
-        this.locationService.updateLocation(location);
-
-        // Start watching position after getting initial location
-        this.startWatchingPosition();
-      },
-      (error) => {
-        console.error('Lỗi khi lấy vị trí:', error);
-      },
-      {
-        enableHighAccuracy: false,
-        timeout: 15000,
-        maximumAge: 0
-      }
-    );
+    // Start watching position after getting initial location
+    // this.startWatchingPosition();
+   
   }
 
   private startWatchingPosition() {
@@ -298,7 +282,7 @@ for (const result of this.searchResults) {
   }
 
   private calculateRoute() {
-    if (!this.currentLocation || !this.destinationLocation || !this.dataSource) return;
+    if ( !this.destinationLocation || !this.dataSource) return;
 
    
     const end: [number, number] = [this.destinationLocation.lat, this.destinationLocation.lng];

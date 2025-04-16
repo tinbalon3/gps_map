@@ -9,8 +9,8 @@ export interface Coordinates {
 }
 
 export interface RouteRequest {
-  start: Coordinates;
-  end: Coordinates;
+ 
+  destination_location: Coordinates;
   avoid?: string[];
 }
 
@@ -42,13 +42,10 @@ export class RoutingService {
 
   constructor(private http: HttpClient) { }
 
-  getRoute(start: [number, number], end: [number, number]): Observable<RouteResponse> {
+  getRoute( end: [number, number]): Observable<RouteResponse> {
     const request: RouteRequest = {
-      start: {
-        latitude: start[0],
-        longitude: start[1]
-      },
-      end: {
+      
+      destination_location: {
         latitude: end[0],
         longitude: end[1]
       }
