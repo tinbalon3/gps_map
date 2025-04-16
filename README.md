@@ -47,16 +47,7 @@ Request body:
   "avoid": ["tollRoads", "ferries"]  // Optional - tránh đường thu phí, phà
 }
 ```
-Request body:
-```json
-{
-  "destination_location": {
-    "latitude": 21.0355,
-    "longitude": 105.8460
-  },
-  "avoid": ["tollRoads", "ferries"]  // Optional
-}
-```
+
 
 Response:
 ```json
