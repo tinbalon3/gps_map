@@ -1,113 +1,182 @@
-# Azure Maps Routing API
+# Backend API Documentation
 
-Backend API service cho việc tích hợp với Azure Maps để tính toán tuyến đường.
+## 1. API Tìm Kiếm Địa Điểm (Search API)
 
-## Cài đặt
+API này cho phép tìm kiếm các địa điểm dựa trên từ khóa tìm kiếm và vị trí của người dùng.
 
-1. Tạo môi trường ảo Python:
-```bash
-python -m venv .venv
-source .venv/bin/activate  # Linux/Mac
-.venv\Scripts\activate     # Windows
-```
+### Thông tin Endpoint
 
-2. Cài đặt các dependencies:
-```bash
-pip install -r requirements.txt
-```
+- **URL**: `/search`
+- **Method**: `POST`
+- **Content-Type**: `application/json`
 
-3. Cấu hình môi trường:
-- Sao chép file `.env.example` thành `.env`
-- Cập nhật các giá trị trong `.env` với Azure Maps credentials của bạn
+### Tham số đầu vào
 
-## Chạy server
-
-```bash
-uvicorn main:app --reload
-```
-
-Server sẽ chạy tại http://localhost:8000
-
-## API Endpoints
-
-### GET /
-- Kiểm tra API đang hoạt động
-- Response: `{"status": "Azure Maps Routing API is running"}`
-
-### POST /route
-Tính toán tuyến đường giữa hai điểm
-
-Request body:
 ```json
 {
-  "start": {
-    "latitude": 21.0285,
-    "longitude": 105.8542
-  },
-  "end": {
-    "latitude": 21.0355,
-    "longitude": 105.8460
-  },
-  "avoid": ["tollRoads", "ferries"]  // Optional
-}
-```
-
-Response:
-```json
-{
-  "status": "success",
-  "route": {
-    "distance": 1234.56,        // meters
-    "duration": 300,            // seconds
-    "points": [                 // Chi tiết các điểm trên tuyến đường
-      {
-        "latitude": 21.0285,
-        "longitude": 105.8542,
-        "distance_from_start": 0
-      },
-      // ...
-    ],
-    "waypoints": [             // Các điểm dừng/rẽ chính
-      {
-        "latitude": 21.0295,
-        "longitude": 105.8532,
-        "instruction": "Rẽ phải vào đường ABC",
-        "distance_from_start": 150.5
-      },
-      // ...
-    ]
+  "query": "từ khóa tìm kiếm (ví dụ: Vườn lài)",
+  "coordinates": {
+    "latitude": 10.801300,
+    "longitude": 106.650378
   }
 }
 ```
 
-### GET /health
-Kiểm tra trạng thái hoạt động của service
+- `query`: Từ khóa tìm kiếm (không bắt buộc, mặc định là "Vườn lài")
+- `coordinates`: Vị trí hiện tại của người dùng (không bắt buộc)
+  - `latitude`: Vĩ độ
+  - `longitude`: Kinh độ
 
-Response:
+### Dữ liệu trả về
+
 ```json
 {
-  "status": "healthy",
-  "azure_maps": "connected"
+  "status": "success",
+  "results": [
+    {
+      "name": "Tên địa điểm",
+      "address": "Địa chỉ chi tiết",
+      "coordinates": {
+        "latitude": 10.801300,
+        "longitude": 106.650378
+      }
+    }
+  ],
+  "error": "Thông báo lỗi (nếu có)"
 }
 ```
 
-## Lỗi và Xử lý lỗi
+### Thông số kỹ thuật
 
-API trả về lỗi với format:
+- Bán kính tìm kiếm: 10km xung quanh vị trí người dùng
+- Nếu không cung cấp vị trí, hệ thống sẽ sử dụng tọa độ mặc định (10.801300, 106.650378)
+- API tích hợp với Azure Maps để cung cấp dữ liệu chính xác
+
+### Xử lý lỗi
+
+- **400**: Invalid coordinates - Tọa độ không hợp lệ
+- **400**: Invalid response from Azure Maps - Lỗi từ Azure Maps API
+- **500**: Azure Maps error - Lỗi kết nối với Azure Maps
+- **500**: Internal server error - Lỗi hệ thống
+
+### Ví dụ sử dụng
+
+```bash
+curl -X POST http://localhost:8000/search \
+  -H "Content-Type: application/json" \
+  -d '{
+    "query": "Vườn lài",
+    "coordinates": {
+      "latitude": 10.801300,
+      "longitude": 106.650378
+    }
+  }'
+```
+
+## 2. API Tìm Đường (Route API)
+
+API này cho phép tìm tuyến đường từ điểm xuất phát đến điểm đích, với khả năng tránh các loại đường không mong muốn.
+
+### Thông tin Endpoint
+
+- **URL**: `/route`
+- **Method**: `POST`
+- **Content-Type**: `application/json`
+
+### Tham số đầu vào
+
 ```json
 {
-  "status": "error",
-  "error": "Mô tả lỗi"
+  "start": {
+    "latitude": 10.801300,
+    "longitude": 106.650378
+  },
+  "end": {
+    "latitude": 10.847037,
+    "longitude": 106.692735
+  },
+  "avoid": ["tollRoads", "ferries"]
 }
 ```
 
-Các mã lỗi HTTP:
-- 400: Bad Request - Dữ liệu không hợp lệ
-- 401: Unauthorized - Azure Maps credentials không hợp lệ
-- 503: Service Unavailable - Không thể kết nối đến Azure Maps
-- 500: Internal Server Error - Lỗi server khác
+- `start`: Tọa độ điểm xuất phát (không bắt buộc, có giá trị mặc định)
+  - `latitude`: Vĩ độ
+  - `longitude`: Kinh độ
+- `end`: Tọa độ điểm đích (không bắt buộc, có giá trị mặc định)
+  - `latitude`: Vĩ độ
+  - `longitude`: Kinh độ
+- `avoid`: Danh sách các loại đường cần tránh (không bắt buộc)
+  - Các giá trị có thể: "tollRoads" (đường thu phí), "ferries" (phà)
 
-## Bảo mật
-- API sử dụng Azure Maps authentication
-- CORS được cấu hình cho Angular frontend (http://localhost:4200)
-- Các credentials nhạy cảm được lưu trong file .env
+### Dữ liệu trả về
+
+```json
+{
+  "status": "success",
+  "route": {
+    "distance": 8500.5,
+    "duration": 1200,
+    "points": [
+      {
+        "latitude": 10.801300,
+        "longitude": 106.650378,
+        "distance_from_start": 0
+      }
+    ],
+    "waypoints": [
+      {
+        "latitude": 10.801300,
+        "longitude": 106.650378,
+        "distance_from_start": 0
+      }
+    ]
+  },
+  "error": "Thông báo lỗi (nếu có)"
+}
+```
+
+- `distance`: Tổng khoảng cách (mét)
+- `duration`: Thời gian dự kiến (giây)
+- `points`: Danh sách các điểm trên tuyến đường
+- `waypoints`: Danh sách các điểm dừng/rẽ chính
+
+### Xử lý lỗi
+
+- **400**: Invalid coordinates - Tọa độ không hợp lệ
+- **500**: Azure Maps error - Lỗi kết nối với Azure Maps
+- **500**: Internal server error - Lỗi hệ thống
+
+### Ví dụ sử dụng
+
+```bash
+curl -X POST http://localhost:8000/route \
+  -H "Content-Type: application/json" \
+  -d '{
+    "start": {
+      "latitude": 10.801300,
+      "longitude": 106.650378
+    },
+    "end": {
+      "latitude": 10.847037,
+      "longitude": 106.692735
+    },
+    "avoid": ["tollRoads"]
+  }'
+```
+
+## 3. API Kiểm Tra Trạng Thái (Health Check)
+
+### Thông tin Endpoint
+
+- **URL**: `/`
+- **Method**: `GET`
+
+### Dữ liệu trả về
+
+```json
+{
+  "status": "Azure Maps Routing API is running"
+}
+```
+
+API này dùng để kiểm tra trạng thái hoạt động của hệ thống.
