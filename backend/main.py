@@ -13,7 +13,10 @@ app = FastAPI(title="Azure Maps Routing API")
 # Cấu hình CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:4200"],  # Angular dev server
+    allow_origins=[
+        "http://localhost:4200",  # Angular dev server
+        "http://localhost:5173"   # React dev server
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -58,6 +61,7 @@ async def get_route(request: RouteRequest):
             status="error",
             error="Internal server error"
         )
+
 @app.post("/search", response_model=SearchResponse)
 async def search_places(request: SearchRequest):
     """
