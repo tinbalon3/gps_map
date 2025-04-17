@@ -4,7 +4,7 @@ import { RoutingService } from '../../services/routing.service';
 import { SearchService } from '../../services/search.service';
 
 // Azure Maps subscription key - should be in environment variables
-const SUBSCRIPTION_KEY = 'E4R12OMPGbrLz3s1QCj6Zq8rrQQVGhHNrvaM3iaMDPLESrDUj5lAJQQJ99BDACYeBjFLx0UBAAAgAZMP2Ncy';
+const SUBSCRIPTION_KEY = '';
 
 export const AzureMap: React.FC = () => {
   const mapRef = useRef<atlas.Map | null>(null);
